@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
     public void GameClear()
     {
         gameClearText.SetActive(true);
-        Invoke("RestartScene", 1.5f);
+        Invoke("MoveSelectStageScene", 1.5f);
     }
 
     public void RestartScene()
@@ -75,5 +75,10 @@ public class GameManager : MonoBehaviour
             rotationCoolTimeSlider.value = 0;
             canRotateflg = false;
         }   
+    }
+
+    public void MoveSelectStageScene()
+    {
+        SceneManager.LoadScene("SelectStageScene", LoadSceneMode.Single);
     }
 }

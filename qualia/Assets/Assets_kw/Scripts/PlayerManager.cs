@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField] GameManager gameManager;
     [SerializeField] LayerMask blockLayer;
     [SerializeField] GameObject playerDeathEffect;
-    [SerializeField] ObjectShaker objectShaker;
+    [SerializeField] ObjectShaker objectShaker;  
+    [SerializeField] private AudioClip jumpsound;
+    [SerializeField] private AudioClip dashsound;
+    [SerializeField] private AudioClip eatsound;
+    [SerializeField] private AudioClip Power;
 
     public enum DIRECTION_TYPE
     {
@@ -21,10 +26,12 @@ public class PlayerManager : MonoBehaviour
     DIRECTION_TYPE direction = DIRECTION_TYPE.STOP;
 
     Rigidbody2D rigidbody2DPlayer;
+    AudioSource audioSource;
     GameObject mainCameraObject;
     CinemachineBrain mainCaneraObjectComponent;
     VibrationEnergyManager vibrationEnergy;
     VibrationBlockManager vibrationBlock;
+   
 
     float speed;
 
@@ -35,9 +42,13 @@ public class PlayerManager : MonoBehaviour
     bool Dash = false;
     bool VibrationEnergyUsing = false;
     bool canVibrationBlockUsing = false;
+    public bool isVisualOn = false;
+    private bool SongItemflag = false;
 
-    float jumpPower = 500;
+    float jumpPower = 800;
     float sidewaysPower = 5000;
+    private List<string> PushedList = new List<string>();
+    private List<string> GoalPushedList = new List<string>();
 
     // Start is called before the first frame update
     void Start()
@@ -74,6 +85,13 @@ public class PlayerManager : MonoBehaviour
             if(Input.GetButtonDown("Controller button A"))
             {
                 jump();
+                if (SongItemflag == true)
+                {
+                    audioSource = GetComponent<AudioSource>();
+                    audioSource.PlayOneShot(jumpsound);
+                    PushedList.Add("Jump");
+                    Invoke(nameof(Flagoff), 1f);
+                }
             }
             else
             {
@@ -85,6 +103,14 @@ public class PlayerManager : MonoBehaviour
         //if (Input.GetKey("a") || Input.GetKey("joystick button 2"))
         if (Input.GetButton("Controller button X") )
         {
+            if (SongItemflag == true && Input.GetButtonDown("Controller button X"))
+            {
+                audioSource = GetComponent<AudioSource>();
+                Debug.Log("sound!!!");
+                audioSource.PlayOneShot(dashsound);
+                PushedList.Add("Dash");
+                Invoke(nameof(Flagoff), 1f);
+            }
             if (IsGround())
             {
                 Dash = true;
@@ -97,35 +123,98 @@ public class PlayerManager : MonoBehaviour
 
         //zキーおよびコントローラーBボタン
         //if ((Input.GetKeyDown("z") || Input.GetKeyDown("joystick button 1")) && isRotating == false && gameManager.canRotateflg == true)
-        if ((Input.GetButtonDown("Controller button B") && isRotating == false && gameManager.canRotateflg == true))
+        if (SceneManager.GetActiveScene().name == "UseRotationStage")
         {
-            isRotating = true;
-            RightArrowBlockEffect = true;
-            UpArrowBlockEffect = true;
-            animator.SetBool("isrotating", true);
-            Invoke("rotateCancel", 1.5f); //1.5s後に回転キャンセル
-            gameManager.StartCoroutine("RotationCoolTimeCounterZero");
+            if ((Input.GetButtonDown("Controller button B") && isRotating == false && gameManager.canRotateflg == true))
+            {
+                isRotating = true;
+                RightArrowBlockEffect = true;
+                UpArrowBlockEffect = true;
+                animator.SetBool("isrotating", true);
+                Invoke("rotateCancel", 1.5f); //1.5s後に回転キャンセル
+                gameManager.StartCoroutine("RotationCoolTimeCounterZero");
 
-        }
+            }
+        } else if (SceneManager.GetActiveScene().name == "UseHearingStage") {
+            if ((Input.GetButtonDown("Controller button B") && SongItemflag == true))
+            {
+                audioSource = GetComponent<AudioSource>();
+                audioSource.PlayOneShot(eatsound);
+                PushedList.Add("Eat");
+                Invoke(nameof(Flagoff), 1f);
+            }
+        } 
 
         //xキーおよびコントローラーYボタン
         //if ((Input.GetKeyDown("x") || Input.GetKeyDown("joystick button 3")) && VibrationEnergyUsing == true)
-        if ((Input.GetButtonDown("Controller button Y") && VibrationEnergyUsing == true))
+        if (SceneManager.GetActiveScene().name == "UseVibrationionStage") //振動ステージ Todo:獲得能力のフラグで管理するように修正する必要あり
         {
-            ControllerVibrationStart();
-           // StartCoroutine("TemporaryWait"); //コルーチンにしたけど、結局使わず
-            CinemachineOfMainCameraAndPlayerStop();
-            objectShaker.Shake(mainCameraObject); 
-            Invoke("CinemachineOfMainCameraAndPlayerActive", 1.5f); //1,5s後に無効化したコンポーネントおよびスクリプトを有効にする
-            ReleaseVibrationEnergy(); //画面内の敵を倒す
-            Invoke("ControllerVibrationEnd", 2.0f); 
-        }
+            if ((Input.GetButtonDown("Controller button Y") && VibrationEnergyUsing == true))
+            {
+                ControllerVibrationStart();
+                // StartCoroutine("TemporaryWait"); //コルーチンにしたけど、結局使わず
+                CinemachineOfMainCameraAndPlayerStop();
+                objectShaker.Shake(mainCameraObject);
+                Invoke("CinemachineOfMainCameraAndPlayerActive", 1.5f); //1,5s後に無効化したコンポーネントおよびスクリプトを有効にする
+                ReleaseVibrationEnergy(); //画面内の敵を倒す
+                Invoke("ControllerVibrationEnd", 2.0f);
+            }
+        }else if(SceneManager.GetActiveScene().name == "UseVisualStage")
+        {
+            if (Input.GetButtonDown("Controller button Y"))
+            {
+                Debug.Log("Y");
+                isVisualOn = true;
+            }
+                
+        }else if(SceneManager.GetActiveScene().name == "UseHearingStage")
+        {
+            if (Input.GetButtonDown("Controller button Y") && SongItemflag == false)
+            {
+                SongItemflag = true;
+                Invoke(nameof(SongItemflagoff), 10f);             
+            }
+        }          
 
         if ((Input.GetKeyDown("x") || Input.GetKeyDown("joystick button 3")) && canVibrationBlockUsing == true)
         {
             vibrationBlock.RisingBlock();
             canVibrationBlockUsing = false;
             ControllerVibrationEnd();
+        }
+
+        if(SceneManager.GetActiveScene().name == "UseHearingStage")
+        {
+            GoalPushedList.Add("Dash");
+            GoalPushedList.Add("Jump");
+            GoalPushedList.Add("Eat");
+
+            if (PushedList.Count == 3)
+            {
+                if (GoalPushedList[0] == PushedList[0])
+                {
+                    if (GoalPushedList[1] == PushedList[1])
+                    {
+                        if (GoalPushedList[2] == PushedList[2])
+                        {
+                            audioSource.PlayOneShot(Power);
+                            PushedList.Clear();
+                        }
+                        else
+                        {
+                            PushedList.Clear();
+                        }
+                    }
+                    else
+                    {
+                        PushedList.Clear();
+                    }
+                }
+                else
+                {
+                    PushedList.Clear();
+                }
+            }
         }
     }
 
@@ -169,6 +258,11 @@ public class PlayerManager : MonoBehaviour
         {
             //アイテム取得
             collision.gameObject.GetComponent<ItemManager>().GetItem();
+        }
+        if (collision.gameObject.tag == "HearingItem")
+        {
+            //アイテム取得
+            collision.gameObject.GetComponent<HearingHint>().GetHearingItem();
         }
         if (collision.gameObject.tag == "Enemy")
         {
@@ -416,6 +510,24 @@ public class PlayerManager : MonoBehaviour
 
     // ===================================================================================================================================
     // 振動ステージ関数群End
+    // ===================================================================================================================================
+
+    // ===================================================================================================================================
+    // 聴覚ステージ関数群Start
+    // ===================================================================================================================================
+
+    void Flagoff()
+    {
+        PushedList.Clear();
+    }
+
+    void SongItemflagoff()
+    {
+        SongItemflag = false;
+    }
+
+    // ===================================================================================================================================
+    // 聴覚ステージ関数群End
     // ===================================================================================================================================
 
 }

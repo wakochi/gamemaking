@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Assets_kw/Scenes/UseRotationStage.unity
+- path: Assets/Scenes/UseRotationStage.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

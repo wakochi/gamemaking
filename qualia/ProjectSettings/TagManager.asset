@@ -12,6 +12,7 @@ TagManager:
   - RightMovingBlock
   - VibrationEnergy
   - VibrationBlock
+  - HearingItem
   layers:
   - Default
   - TransparentFX
