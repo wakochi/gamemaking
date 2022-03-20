@@ -977,6 +977,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyA (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4708697276212467160, guid: 834483541996d104186f4c90405941b4, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4708697276212467167, guid: 834483541996d104186f4c90405941b4, type: 3}
       propertyPath: m_RootOrder
       value: 20
@@ -3898,7 +3902,7 @@ SpriteRenderer:
   m_Size: {x: 19.2, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1994260360
