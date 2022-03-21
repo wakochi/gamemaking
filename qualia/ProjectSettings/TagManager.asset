@@ -6,13 +6,15 @@ TagManager:
   tags:
   - Trap
   - Item
-  - Enemy
   - BreakableBlock
   - UpMovingBlock
   - RightMovingBlock
   - VibrationEnergy
   - VibrationBlock
   - HearingItem
+  - EnemyA
+  - EnemyB
+  - EnemyC
   layers:
   - Default
   - TransparentFX

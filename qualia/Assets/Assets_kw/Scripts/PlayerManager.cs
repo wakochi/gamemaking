@@ -259,25 +259,27 @@ public class PlayerManager : MonoBehaviour
             //アイテム取得
             collision.gameObject.GetComponent<ItemManager>().GetItem();
         }
+
         if (collision.gameObject.tag == "HearingItem")
         {
             //アイテム取得
             collision.gameObject.GetComponent<HearingHint>().GetHearingItem();
         }
-        if (collision.gameObject.tag == "Enemy")
+
+        if (collision.gameObject.tag == "EnemyA")
         {
-            EnemyAManager enemy = collision.gameObject.GetComponent<EnemyAManager>();
-            if (this.transform.position.y + 0.2f > enemy.transform.position.y) //上から踏む
+            EnemyAManager enemyA = collision.gameObject.GetComponent<EnemyAManager>();
+            if (this.transform.position.y + 0.2f > enemyA.transform.position.y) //上から踏む
             {
                 rigidbody2DPlayer.velocity = new Vector2(rigidbody2DPlayer.velocity.x, 0);
                 jump();
-                enemy.DestroyEnemy();
+                enemyA.DestroyEnemy();
             }
             else // 横からぶつかる
             {
                 if (isRotating == true)
                 {
-                    enemy.DestroyEnemy();
+                    enemyA.DestroyEnemy();
                 }
                 else
                 {
@@ -287,6 +289,31 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+
+        if (collision.gameObject.tag == "EnemyB")
+        {
+            EnemyBManager enemyB = collision.gameObject.GetComponent<EnemyBManager>();
+            if (this.transform.position.y + 0.2f > enemyB.transform.position.y) //上から踏む
+            {
+                rigidbody2DPlayer.velocity = new Vector2(rigidbody2DPlayer.velocity.x, 0);
+                jump();
+                enemyB.DestroyEnemy();
+            }
+            else // 横からぶつかる
+            {
+                if (isRotating == true)
+                {
+                    enemyB.DestroyEnemy();
+                }
+                else
+                {
+                    Destroy(this.gameObject);
+                    Instantiate(playerDeathEffect, this.transform.position, this.transform.rotation);
+                    gameManager.GameOver();
+                }
+            }
+        }
+
         if (collision.gameObject.tag == "Finish")
         {
             gameManager.GameClear();
