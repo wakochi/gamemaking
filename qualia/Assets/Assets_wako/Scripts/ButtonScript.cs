@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ButtonScript : MonoBehaviour
 {
+    public Button FirstSelectButton;
+    void Start()
+    {
+        FirstSelectButton.Select();
+    }
+
     // ボタンが押された場合、今回呼び出される関数
     public void OnClickEye()
     {
