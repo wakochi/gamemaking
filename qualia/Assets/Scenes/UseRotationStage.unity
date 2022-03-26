@@ -602,7 +602,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.469999, y: -0.21262741, z: -10}
+  m_LocalPosition: {x: -5.47, y: -0.21262741, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3488,6 +3488,10 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 998663362}
+    - target: {fileID: 5717641430982568169, guid: bc3313baedd50894e9f56a7e0ffd32ec, type: 3}
+      propertyPath: m_magnetDistance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5717641430982568170, guid: bc3313baedd50894e9f56a7e0ffd32ec, type: 3}
       propertyPath: m_Name
       value: Player

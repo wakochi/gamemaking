@@ -44,11 +44,15 @@ public class PlayerManager : MonoBehaviour
     bool canVibrationBlockUsing = false;
     public bool isVisualOn = false;
     private bool SongItemflag = false;
+    public bool chocolate_eat = false;
+    public bool chocolate_full = false;
 
     float jumpPower = 800;
     float sidewaysPower = 5000;
     private List<string> PushedList = new List<string>();
     private List<string> GoalPushedList = new List<string>();
+    public static PlayerManager m_instance;
+    public float m_magnetDistance; // ã‚³ã‚¤ãƒ³ã‚’å¼•ãã¤ã‘ã‚‹è·é›¢
 
     // Start is called before the first frame update
     void Start()
@@ -56,13 +60,14 @@ public class PlayerManager : MonoBehaviour
         rigidbody2DPlayer = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         mainCameraObject = Camera.main.gameObject;
-        mainCaneraObjectComponent= mainCameraObject.GetComponent<CinemachineBrain>();       
+        mainCaneraObjectComponent= mainCameraObject.GetComponent<CinemachineBrain>(); 
+        m_instance = this; //å¸ã„å¯„ã›ã§åˆ©ç”¨      
     }
 
     // Update is called once per frame
     private void Update()
     {
-        float x = Input.GetAxis("Horizontal"); //•ûŒüƒL[‚Ìæ“¾
+        float x = Input.GetAxis("Horizontal"); //ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½[ï¿½Ìæ“¾
         animator.SetFloat("speed", Mathf.Abs(x));
 
         if (x == 0)
@@ -80,7 +85,7 @@ public class PlayerManager : MonoBehaviour
 
         if (IsGround())
         {
-            //SpaceƒL[‚¨‚æ‚ÑƒRƒ“ƒgƒ[ƒ‰[Aƒ{ƒ^ƒ“
+            //Spaceï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ÑƒRï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[Aï¿½{ï¿½^ï¿½ï¿½
             //if (Input.GetKeyDown("space") || Input.GetKeyDown("joystick button 0"))
             if(Input.GetButtonDown("Controller button A"))
             {
@@ -99,7 +104,17 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        //aƒL[‚¨‚æ‚ÑƒRƒ“ƒgƒ[ƒ‰[Xƒ{ƒ^ƒ“
+        // //å¸ã„å¯„ã›èƒ½åŠ›
+        // if (Input.GetKeyDown("q") && chocolate_full == false)
+        //     {
+        //     chocolate_eat = true;
+        //     chocolate_full = true;
+        //     Invoke("Eat",1.0f);
+        //     Invoke("Full",10.0f);
+        //     }
+        // //å¸ã„å¯„ã›èƒ½åŠ›çµ‚ã‚ã‚Š
+
+        //aï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ÑƒRï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[Xï¿½{ï¿½^ï¿½ï¿½
         //if (Input.GetKey("a") || Input.GetKey("joystick button 2"))
         if (Input.GetButton("Controller button X") )
         {
@@ -121,7 +136,7 @@ public class PlayerManager : MonoBehaviour
             Dash = false;
         }
 
-        //zƒL[‚¨‚æ‚ÑƒRƒ“ƒgƒ[ƒ‰[Bƒ{ƒ^ƒ“
+        //zï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ÑƒRï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[Bï¿½{ï¿½^ï¿½ï¿½
         //if ((Input.GetKeyDown("z") || Input.GetKeyDown("joystick button 1")) && isRotating == false && gameManager.canRotateflg == true)
         if (SceneManager.GetActiveScene().name == "UseRotationStage")
         {
@@ -131,7 +146,7 @@ public class PlayerManager : MonoBehaviour
                 RightArrowBlockEffect = true;
                 UpArrowBlockEffect = true;
                 animator.SetBool("isrotating", true);
-                Invoke("rotateCancel", 1.5f); //1.5sŒã‚É‰ñ“]ƒLƒƒƒ“ƒZƒ‹
+                Invoke("rotateCancel", 1.5f); //1.5sï¿½ï¿½É‰ï¿½]ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½
                 gameManager.StartCoroutine("RotationCoolTimeCounterZero");
 
             }
@@ -145,18 +160,18 @@ public class PlayerManager : MonoBehaviour
             }
         } 
 
-        //xƒL[‚¨‚æ‚ÑƒRƒ“ƒgƒ[ƒ‰[Yƒ{ƒ^ƒ“
+        //xï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ÑƒRï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[Yï¿½{ï¿½^ï¿½ï¿½
         //if ((Input.GetKeyDown("x") || Input.GetKeyDown("joystick button 3")) && VibrationEnergyUsing == true)
-        if (SceneManager.GetActiveScene().name == "UseVibrationionStage") //U“®ƒXƒe[ƒW Todo:Šl“¾”\—Í‚Ìƒtƒ‰ƒO‚ÅŠÇ—‚·‚é‚æ‚¤‚ÉC³‚·‚é•K—v‚ ‚è
+        if (SceneManager.GetActiveScene().name == "UseVibrationionStage") //ï¿½Uï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½W Todo:ï¿½lï¿½ï¿½ï¿½\ï¿½Í‚Ìƒtï¿½ï¿½ï¿½Oï¿½ÅŠÇ—ï¿½ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½ÉCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½vï¿½ï¿½ï¿½ï¿½
         {
             if ((Input.GetButtonDown("Controller button Y") && VibrationEnergyUsing == true))
             {
                 ControllerVibrationStart();
-                // StartCoroutine("TemporaryWait"); //ƒRƒ‹[ƒ`ƒ“‚É‚µ‚½‚¯‚ÇAŒ‹‹Çg‚í‚¸
+                // StartCoroutine("TemporaryWait"); //ï¿½Rï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÇAï¿½ï¿½ï¿½Çgï¿½í‚¸
                 CinemachineOfMainCameraAndPlayerStop();
                 objectShaker.Shake(mainCameraObject);
-                Invoke("CinemachineOfMainCameraAndPlayerActive", 1.5f); //1,5sŒã‚É–³Œø‰»‚µ‚½ƒRƒ“ƒ|[ƒlƒ“ƒg‚¨‚æ‚ÑƒXƒNƒŠƒvƒg‚ğ—LŒø‚É‚·‚é
-                ReleaseVibrationEnergy(); //‰æ–Ê“à‚Ì“G‚ğ“|‚·
+                Invoke("CinemachineOfMainCameraAndPlayerActive", 1.5f); //1,5sï¿½ï¿½É–ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½|ï¿½[ï¿½lï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ÑƒXï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½ï¿½Lï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
+                ReleaseVibrationEnergy(); //ï¿½ï¿½Ê“ï¿½ï¿½Ì“Gï¿½ï¿½|ï¿½ï¿½
                 Invoke("ControllerVibrationEnd", 2.0f);
             }
         }else if(SceneManager.GetActiveScene().name == "UseVisualStage")
@@ -173,6 +188,15 @@ public class PlayerManager : MonoBehaviour
             {
                 SongItemflag = true;
                 Invoke(nameof(SongItemflagoff), 10f);             
+            }
+        }else if(SceneManager.GetActiveScene().name == "UseAbsorb")
+        {
+            if (Input.GetButtonDown("Controller button Y") && chocolate_full == false)
+            {
+            chocolate_eat = true;
+            chocolate_full = true;
+            Invoke("Eat",1.0f);
+            Invoke("Full",10.0f);
             }
         }          
 
@@ -222,24 +246,24 @@ public class PlayerManager : MonoBehaviour
     {
         switch (direction)
         {
-            case DIRECTION_TYPE.STOP: //~‚Ü‚Á‚Ä‚¢‚é
+            case DIRECTION_TYPE.STOP: //ï¿½~ï¿½Ü‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
                 speed = 0;
                 break;
-            case DIRECTION_TYPE.RIGHT: //‰E‚É“®‚­
+            case DIRECTION_TYPE.RIGHT: //ï¿½Eï¿½É“ï¿½ï¿½ï¿½
                 speed = 4;
                 if(Dash)
                 {
                     speed = 8;
                 }
-                transform.localScale = new Vector3(1, 1, 1); //ƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«‚ğ‰E‚É•ÏX
+                transform.localScale = new Vector3(1, 1, 1); //ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½^ï¿½[ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½É•ÏX
                 break;
-            case DIRECTION_TYPE.LEFT: //¶‚É“®‚­
+            case DIRECTION_TYPE.LEFT: //ï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½
                 speed = -4;
                 if (Dash)
                 {
                     speed = -8;
                 }
-                transform.localScale = new Vector3(-1, 1, 1); //ƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«‚ğ¶‚É•ÏX
+                transform.localScale = new Vector3(-1, 1, 1); //ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½^ï¿½[ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É•ÏX
                 break;
         }
         rigidbody2DPlayer.velocity = new Vector2(speed, rigidbody2DPlayer.velocity.y);
@@ -256,26 +280,26 @@ public class PlayerManager : MonoBehaviour
 
         if (collision.gameObject.tag == "Item")
         {
-            //ƒAƒCƒeƒ€æ“¾
+            //ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½æ“¾
             collision.gameObject.GetComponent<ItemManager>().GetItem();
         }
 
         if (collision.gameObject.tag == "HearingItem")
         {
-            //ƒAƒCƒeƒ€æ“¾
+            //ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½æ“¾
             collision.gameObject.GetComponent<HearingHint>().GetHearingItem();
         }
 
         if (collision.gameObject.tag == "EnemyA")
         {
             EnemyAManager enemyA = collision.gameObject.GetComponent<EnemyAManager>();
-            if (this.transform.position.y + 0.2f > enemyA.transform.position.y) //ã‚©‚ç“¥‚Ş
+            if (this.transform.position.y + 0.2f > enemyA.transform.position.y) //ï¿½ã‚©ï¿½ç“¥ï¿½ï¿½
             {
                 rigidbody2DPlayer.velocity = new Vector2(rigidbody2DPlayer.velocity.x, 0);
                 jump();
                 enemyA.DestroyEnemy();
             }
-            else // ‰¡‚©‚ç‚Ô‚Â‚©‚é
+            else // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚Â‚ï¿½ï¿½ï¿½
             {
                 if (isRotating == true)
                 {
@@ -293,13 +317,13 @@ public class PlayerManager : MonoBehaviour
         if (collision.gameObject.tag == "EnemyB")
         {
             EnemyBManager enemyB = collision.gameObject.GetComponent<EnemyBManager>();
-            if (this.transform.position.y + 0.2f > enemyB.transform.position.y) //ã‚©‚ç“¥‚Ş
+            if (this.transform.position.y + 0.2f > enemyB.transform.position.y) //ï¿½ã‚©ï¿½ç“¥ï¿½ï¿½
             {
                 rigidbody2DPlayer.velocity = new Vector2(rigidbody2DPlayer.velocity.x, 0);
                 jump();
                 enemyB.DestroyEnemy();
             }
-            else // ‰¡‚©‚ç‚Ô‚Â‚©‚é
+            else // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚Â‚ï¿½ï¿½ï¿½
             {
                 if (isRotating == true)
                 {
@@ -319,7 +343,7 @@ public class PlayerManager : MonoBehaviour
             gameManager.GameClear();
         }
 
-        if (collision.gameObject.tag == "VibrationEnergy") //ƒLƒ‰ƒLƒ‰‚É“ü‚é‚ÆU“®‚ğg‚¦‚é
+        if (collision.gameObject.tag == "VibrationEnergy") //ï¿½Lï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½É“ï¿½ï¿½ï¿½ÆUï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½
         {
             vibrationEnergy = collision.gameObject.GetComponent<VibrationEnergyManager>();
             //ControllerVibrationStart();
@@ -355,7 +379,7 @@ public class PlayerManager : MonoBehaviour
         {
             if (isRotating == true && UpArrowBlockEffect == true)
             {
-                rigidbody2DPlayer.velocity = Vector2.zero; //ƒWƒƒƒ“ƒv’†‚¾‚Æy•ûŒü‚Ì‘¬“x‚Æ‘«‚µ‡‚í‚³‚Á‚Ä‘å‚«‚­”ò‚ñ‚Å‚µ‚Ü‚¤‚½‚ßA‘¬“x0‚Å‰Šú‰»‚·‚é
+                rigidbody2DPlayer.velocity = Vector2.zero; //ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½ï¿½ï¿½Ì‘ï¿½ï¿½xï¿½Æ‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½í‚³ï¿½ï¿½ï¿½Ä‘å‚«ï¿½ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½ßAï¿½ï¿½ï¿½x0ï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 rigidbody2DPlayer.AddForce(Vector2.up * jumpPower * 2);
                 UpArrowBlockEffect = false;
             }
@@ -365,14 +389,14 @@ public class PlayerManager : MonoBehaviour
         {
             if (isRotating == true && RightArrowBlockEffect == true)
             {
-                rigidbody2DPlayer.velocity = Vector2.zero; //x²•ûŒü‚É‘¬“x‚ğ‚Á‚Ä‚¢‚é‚Æ‘«‚µ‡‚í‚³‚Á‚Ä‘å‚«‚­ˆÚ“®‚µ‚Ü‚¤‚½‚ßA‘¬“x0‚Å‰Šú‰»‚·‚é
+                rigidbody2DPlayer.velocity = Vector2.zero; //xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É‘ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Æ‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½í‚³ï¿½ï¿½ï¿½Ä‘å‚«ï¿½ï¿½ï¿½Ú“ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½ßAï¿½ï¿½ï¿½x0ï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 rigidbody2DPlayer.AddForce(Vector2.right * sidewaysPower * 2);
                 RightArrowBlockEffect = false;
             }
         }
     }
     
-    private void OnTriggerExit2D(Collider2D collision) //ƒLƒ‰ƒLƒ‰‚©‚ço‚é‚ÆU“®‚ğ~‚ß‚é
+    private void OnTriggerExit2D(Collider2D collision) //ï¿½Lï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ÆUï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½ß‚ï¿½
     {
         if (collision.gameObject.tag == "VibrationEnergy")
         {
@@ -393,15 +417,15 @@ public class PlayerManager : MonoBehaviour
 
 
     // ===================================================================================================================================
-    // ƒvƒŒƒCƒ„[‹¤’ÊŠÖ”ŒQStart
+    // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÊŠÖï¿½ï¿½QStart
     // ===================================================================================================================================
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚ğƒWƒƒƒ“ƒv‚³‚¹‚é
+    /// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     void jump()
     {
-        //ã‚É—Í‚ğ‰Á‚¦‚é
+        //ï¿½ï¿½É—Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         rigidbody2DPlayer.AddForce(Vector2.up * jumpPower);
         animator.SetBool("isjumping", true);
 
@@ -409,11 +433,11 @@ public class PlayerManager : MonoBehaviour
     
 
    /// <summary>
-   /// ƒvƒŒƒCƒ„[‚Æ’n–Ê‚Ìİ’u”»’è‚ğs‚¤
+   /// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Æ’nï¿½Ê‚Ìİ’uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
    /// </summary>
     bool IsGround()
     {
-        //n“_‚ÆI“_‚ğì¬
+        //ï¿½nï¿½_ï¿½ÆIï¿½_ï¿½ï¿½ï¿½ì¬
         Vector3 leftStartPoint = transform.position - Vector3.right * 0.2f + Vector3.up * 0.04f;
         Vector3 rightStartPoint = transform.position + Vector3.right * 0.2f + Vector3.up * 0.04f;
         Vector3 endPoint = transform.position - Vector3.up * 0.1f;
@@ -424,7 +448,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒRƒ“ƒgƒ[ƒ‰[‚ÌU“®‚ğŠJn‚·‚é
+    /// ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[ï¿½ÌUï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½nï¿½ï¿½ï¿½ï¿½
     /// </summary>
 
     void ControllerVibrationStart()
@@ -437,7 +461,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒRƒ“ƒgƒ[ƒ‰[‚ÌU“®‚ğ~‚ß‚é
+    /// ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[ï¿½ÌUï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½ß‚ï¿½
     /// </summary>
     void ControllerVibrationEnd()
     {
@@ -449,7 +473,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// MainCamera‚ÌChinemachineBrain‚Æ‚±‚ÌƒXƒNƒŠƒvƒg©g‚ğƒAƒNƒeƒBƒu‚É‚·‚é
+    /// MainCameraï¿½ï¿½ChinemachineBrainï¿½Æ‚ï¿½ï¿½ÌƒXï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Aï¿½Nï¿½eï¿½Bï¿½uï¿½É‚ï¿½ï¿½ï¿½
     /// </summary>
     void CinemachineOfMainCameraAndPlayerActive()
     {
@@ -459,26 +483,26 @@ public class PlayerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// MainCamera‚ÌChinemachineBrain‚Æ‚±‚ê©g‚ğ”ñƒAƒNƒeƒBƒu‚É‚·‚é
+    /// MainCameraï¿½ï¿½ChinemachineBrainï¿½Æ‚ï¿½ï¿½ê©ï¿½gï¿½ï¿½ï¿½Aï¿½Nï¿½eï¿½Bï¿½uï¿½É‚ï¿½ï¿½ï¿½
     /// </summary>
     void CinemachineOfMainCameraAndPlayerStop()
     {
-        mainCaneraObjectComponent.enabled = false; //ChinemachineBrain‚ğ–³Œø
+        mainCaneraObjectComponent.enabled = false; //ChinemachineBrainï¿½ğ–³Œï¿½
         animator.SetFloat("speed", Mathf.Abs(0));  
-        rigidbody2DPlayer.velocity = new Vector2(0, rigidbody2DPlayer.velocity.y); //“®‚«‚È‚ª‚çƒMƒ~ƒbƒN‚ğ”­“®‚·‚éê‡‚àl—¶‚µ‚Ä‚±‚±‚ÅƒvƒŒƒCƒ„[‚Ì“®‚«‚ğ~‚ß‚é
-        this.enabled = false; //‚±‚ÌƒXƒNƒŠƒvƒg‚ğ–³Œø‚É‚µ‚ÄƒvƒŒƒCƒ„[‚ğ“®‚©‚È‚¢‚æ‚¤‚É‚·‚é
+        rigidbody2DPlayer.velocity = new Vector2(0, rigidbody2DPlayer.velocity.y); //ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½Mï¿½~ï¿½bï¿½Nï¿½ğ”­“ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½Åƒvï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ì“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½ß‚ï¿½
+        this.enabled = false; //ï¿½ï¿½ï¿½ÌƒXï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½ğ–³Œï¿½ï¿½É‚ï¿½ï¿½Äƒvï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ğ“®‚ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
     }
 
     // ===================================================================================================================================
-    // ƒvƒŒƒCƒ„[‹¤’ÊŠÖ”ŒQEnd
+    // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÊŠÖï¿½ï¿½QEnd
     // ===================================================================================================================================
 
     // ===================================================================================================================================
-    // ‰ñ“]ƒXƒe[ƒWŠÖ”ŒQStart
+    // ï¿½ï¿½]ï¿½Xï¿½eï¿½[ï¿½Wï¿½Öï¿½ï¿½QStart
     // ===================================================================================================================================
 
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚Ì‰ñ“]‚ğƒLƒƒƒ“ƒZƒ‹‚·‚éiInvoke‚ÅŒÄ‚Ño‚µ‚Äg—pj
+    /// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ì‰ï¿½]ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iInvokeï¿½ÅŒÄ‚Ñoï¿½ï¿½ï¿½Ägï¿½pï¿½j
     /// </summary>
     private void rotateCancel()
     {
@@ -491,15 +515,15 @@ public class PlayerManager : MonoBehaviour
     }
 
     // ===================================================================================================================================
-    // ‰ñ“]ƒXƒe[ƒWŠÖ”ŒQEnd
+    // ï¿½ï¿½]ï¿½Xï¿½eï¿½[ï¿½Wï¿½Öï¿½ï¿½QEnd
     // ===================================================================================================================================
 
     // ===================================================================================================================================
-    // U“®ƒXƒe[ƒWŠÖ”ŒQStart
+    // ï¿½Uï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½Öï¿½ï¿½QStart
     // ===================================================================================================================================
 
     /// <summary>
-    /// üˆÍ‚ÌƒRƒ‰ƒCƒ_[‚ğW‚ß‚ÄA“G‚ÌƒRƒ‰ƒCƒ_[‚Å‚ ‚ê‚Î‚»‚Ì“G‚ğ“|‚·
+    /// ï¿½ï¿½ï¿½Í‚ÌƒRï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½ï¿½ï¿½Wï¿½ß‚ÄAï¿½Gï¿½ÌƒRï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½Å‚ï¿½ï¿½ï¿½Î‚ï¿½ï¿½Ì“Gï¿½ï¿½|ï¿½ï¿½
     /// </summary>
     private void ReleaseVibrationEnergy()
     {
@@ -517,12 +541,12 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        if (vibrationEnergy != null) vibrationEnergy.OnCompleteEffect(); //ƒLƒ‰ƒLƒ‰ƒGƒtƒFƒNƒg‚ğÁ‚·
-        VibrationEnergyUsing = false; //˜A‘Å–h~
+        if (vibrationEnergy != null) vibrationEnergy.OnCompleteEffect(); //ï¿½Lï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½Gï¿½tï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        VibrationEnergyUsing = false; //ï¿½Aï¿½Å–hï¿½~
     }
 
     /// <summary>
-    /// ˆê“I‚ÉƒvƒŒƒCƒ„[‚ğ“®‚¯‚È‚­‚·‚é
+    /// ï¿½êï¿½Iï¿½Éƒvï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ğ“®‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
         private IEnumerator TemporaryWait()
     {
@@ -530,17 +554,17 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         CinemachineOfMainCameraAndPlayerStop();
         objectShaker.Shake(mainCameraObject);
-        Invoke("CinemachineOfMainCameraAndPlayerActive", 1.5f); //1,5sŒã‚É–³Œø‰»‚µ‚½ƒRƒ“ƒ|[ƒlƒ“ƒg‚¨‚æ‚ÑƒXƒNƒŠƒvƒg‚ğ—LŒø‚É‚·‚é
-        ReleaseVibrationEnergy(); //‰æ–Ê“à‚Ì“G‚ğ“|‚·
+        Invoke("CinemachineOfMainCameraAndPlayerActive", 1.5f); //1,5sï¿½ï¿½É–ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½|ï¿½[ï¿½lï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ÑƒXï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½ï¿½Lï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
+        ReleaseVibrationEnergy(); //ï¿½ï¿½Ê“ï¿½ï¿½Ì“Gï¿½ï¿½|ï¿½ï¿½
         Invoke("ControllerVibrationEnd", 1.5f);
     }
 
     // ===================================================================================================================================
-    // U“®ƒXƒe[ƒWŠÖ”ŒQEnd
+    // ï¿½Uï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½Öï¿½ï¿½QEnd
     // ===================================================================================================================================
 
     // ===================================================================================================================================
-    // ’®ŠoƒXƒe[ƒWŠÖ”ŒQStart
+    // ï¿½ï¿½ï¿½oï¿½Xï¿½eï¿½[ï¿½Wï¿½Öï¿½ï¿½QStart
     // ===================================================================================================================================
 
     void Flagoff()
@@ -554,7 +578,30 @@ public class PlayerManager : MonoBehaviour
     }
 
     // ===================================================================================================================================
-    // ’®ŠoƒXƒe[ƒWŠÖ”ŒQEnd
+    // ï¿½ï¿½ï¿½oï¿½Xï¿½eï¿½[ï¿½Wï¿½Öï¿½ï¿½QEnd
     // ===================================================================================================================================
+
+
+
+    // ===================================================================================================================================
+    // StartAbsorb
+    // ===================================================================================================================================
+
+    void Eat()
+    {
+        chocolate_eat = false;
+    }
+
+    void Full()
+    {
+        chocolate_full = false;
+    }
+
+    // ===================================================================================================================================
+    // EndAbsorb
+    // ===================================================================================================================================
+
+
+
 
 }

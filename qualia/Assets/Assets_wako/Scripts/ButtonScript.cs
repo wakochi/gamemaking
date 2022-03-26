@@ -32,6 +32,11 @@ public class ButtonScript : MonoBehaviour
     {
         SceneManager.LoadScene("UseVibrationStage", LoadSceneMode.Single);
     }
+    
+    public void OnClickAbsorb()
+    {
+        SceneManager.LoadScene("UseAbsorb", LoadSceneMode.Single);
+    }
 
     public void OnClickGameEnd()
     {
