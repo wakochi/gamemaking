@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UseVisualStage.unity
     guid: 91a92dd29938f8c449e54ea7dc4a81ba
+  - enabled: 1
+    path: Assets/Scenes/UseAbsorb.unity
+    guid: 3cfe95195fcb27643a31fef42394ffda
   m_configObjects: {}
