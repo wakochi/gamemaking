@@ -20,13 +20,15 @@ public class ChangeStageColor : MonoBehaviour
         if (playerManagerCheck.isVisualOn)
         {
             GetComponent<Renderer>().material.color = Color.white;
-            Invoke(nameof(DelayMethod), 10f);
+            // Invoke(nameof(DelayMethod), 10f);
+        }else{
+            GetComponent<Renderer>().material.color = new Color(255, 255, 255, 1); 
         }
     }
 
-    void DelayMethod()
-    {
-        GetComponent<Renderer>().material.color = new Color(255, 255, 255, 1); 
-    }
+    // void DelayMethod()
+    // {
+    //     GetComponent<Renderer>().material.color = new Color(255, 255, 255, 1); 
+    // }
 
 }

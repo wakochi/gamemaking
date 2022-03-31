@@ -20,14 +20,16 @@ public class BackgroundChange : MonoBehaviour
         if (playerManagerCheck.isVisualOn)
         {
             GetComponent<Renderer>().material.color = Color.white;
-            Invoke(nameof(DelayMethod), 10f);
+            // Invoke(nameof(DelayMethod), 10f);
+        }else{
+            GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
         }
     }
 
-    void DelayMethod()
-    {
-        GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
-    }
+    // void DelayMethod()
+    // {
+    //     GetComponent<Renderer>().material.color = new Color(0, 0, 0, 0);
+    // }
 
 
 
