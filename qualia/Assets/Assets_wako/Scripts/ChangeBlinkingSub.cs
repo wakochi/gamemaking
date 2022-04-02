@@ -17,14 +17,18 @@ public class ChangeBlinkingSub : MonoBehaviour
     {
         if (playerManagerCheck.isVisualOn)
         {
-            this.gameObject.SetActive (false);
-            Invoke(nameof(DelayMethod), 10f);
+            // this.gameObject.SetActive (false);
+            GetComponent<Renderer>().material.color = new Color(255, 255, 255, 0); 
+            // Invoke(nameof(DelayMethod), 10f);
+        }else{
+            GetComponent<Renderer>().material.color = new Color(255, 255, 255, 1); 
+            // this.gameObject.SetActive (true);
         }
     }
 
-    void DelayMethod()
-    {
-        this.gameObject.SetActive (true);
-    }
+    // void DelayMethod()
+    // {
+    //     this.gameObject.SetActive (true);
+    // }
 
 }
